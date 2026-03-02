@@ -12,9 +12,35 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="./css/app.css">
 
+  <style>
+    /* Oculta a barra superior do Google Translate */
+    .skiptranslate iframe {
+      display: none !important;
+    }
+
+    body {
+      top: 0px !important;
+    }
+
+    /* Estiliza o widget se quiser aparecer, ou deixa escondido par auto-detect */
+    #google_translate_element {
+      display: none;
+    }
+  </style>
 </head>
 
 <body class="min-h-full bg-gradient-to-br from-slate-900 via-slate-950 to-black text-slate-100 app-bg">
+  <div id="google_translate_element"></div>
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'pt',
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
   <header class="sticky top-0 z-40 backdrop-blur-xl bg-white/10 border-b border-white/20">
     <div class="max-w-6xl mx-auto px-2 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between">
       <div class="flex items-center gap-2 sm:gap-3">
