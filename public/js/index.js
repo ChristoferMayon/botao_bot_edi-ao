@@ -15,7 +15,7 @@ try {
       }
     }
   };
-} catch (_) { }
+} catch (_) {}
 
 // Tabs and section activation
 (() => {
@@ -29,10 +29,10 @@ try {
     tabs.forEach(btn => {
       const isActive = btn.dataset.tab === name;
       try {
-        btn.classList.remove('bg-white/10', 'bg-white/5', 'bg-emerald-500/20', 'bg-emerald-500/30');
+        btn.classList.remove('bg-white/10','bg-white/5','bg-emerald-500/20','bg-emerald-500/30');
         btn.classList.add(isActive ? 'bg-emerald-500/30' : 'bg-emerald-500/20');
       } catch (_) {
-        const base = btn.className.replace(/\b(bg-(white|emerald)-\d+\/\d+|bg-white\/(5|10))\b/g, '').trim();
+        const base = btn.className.replace(/\b(bg-(white|emerald)-\d+\/\d+|bg-white\/(5|10))\b/g,'').trim();
         btn.className = base + ' ' + (isActive ? 'bg-emerald-500/30' : 'bg-emerald-500/20');
       }
     });
@@ -40,7 +40,7 @@ try {
       if (el) el.classList.toggle('hidden', k !== name);
     });
     if (name === 'qr') {
-      try { if (typeof window.initUserInstanceQrTab === 'function') window.initUserInstanceQrTab(); } catch (_) { }
+      try { if (typeof window.initUserInstanceQrTab === 'function') window.initUserInstanceQrTab(); } catch (_) {}
     }
   }
   // expose for other scripts (e.g., realtime banner)
@@ -50,7 +50,7 @@ try {
   try {
     const params = new URLSearchParams(window.location.search);
     const fromParam = (params.get('tab') || '').trim();
-    const valid = ['carousel', 'text', 'qr'];
+    const valid = ['carousel','text','qr'];
     const initial = valid.includes(fromParam) ? fromParam : 'carousel';
     activateTab(initial);
   } catch (_) {
@@ -65,7 +65,7 @@ try {
   const isAdmin = Boolean(localStorage.getItem('adminToken')) || (localStorage.getItem('authRole') === 'admin');
   btnAdmin.style.display = isAdmin ? 'inline-flex' : 'none';
   btnAdmin.addEventListener('click', () => {
-    window.location.href = '/admin';
+  window.location.href = '/admin';
   });
 })();
 
@@ -81,9 +81,9 @@ try {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('authRole');
       localStorage.removeItem('authUser');
-    } catch (e) { }
-    try { window.authFetch('/logout', { method: 'POST' }); } catch (_) { }
-    window.location.href = '/login';
+    } catch (e) {}
+    try { window.authFetch('/logout', { method: 'POST' }); } catch (_) {}
+  window.location.href = '/login';
   });
 })();
 
@@ -94,8 +94,8 @@ try {
     const el = byId(id);
     if (!el) return;
     el.addEventListener('click', (e) => {
-      try { if (e && typeof e.preventDefault === 'function') e.preventDefault(); } catch (_) { }
-      try { if (e && typeof e.stopPropagation === 'function') e.stopPropagation(); } catch (_) { }
+      try { if (e && typeof e.preventDefault === 'function') e.preventDefault(); } catch (_) {}
+      try { if (e && typeof e.stopPropagation === 'function') e.stopPropagation(); } catch (_) {}
       try {
         const fn = window[fnName];
         if (typeof fn === 'function') return fn();
@@ -122,13 +122,13 @@ try {
   sel.addEventListener('change', () => {
     try {
       if (typeof window.loadCarouselTemplate === 'function') window.loadCarouselTemplate();
-    } catch (_) { }
+    } catch (_) {}
   });
 })();
 
 // Prefill instance name from logged-in user
 (() => {
-  (async function prefillInstanceNameFromUser() {
+  (async function prefillInstanceNameFromUser(){
     try {
       const input = document.getElementById('qr-instance');
       if (!input) return;
@@ -137,12 +137,12 @@ try {
       const j = await r.json().catch(() => ({}));
       const username = (j && j.user && j.user.username) ? String(j.user.username).trim() : '';
       try {
-        const norm = (typeof window.normalizeInstanceName === 'function') ? window.normalizeInstanceName(username) : String(username).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '').slice(0, 32);
+        const norm = (typeof window.normalizeInstanceName === 'function') ? window.normalizeInstanceName(username) : String(username).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/-+/g,'-').replace(/^-+|-+$/g,'').slice(0,32);
         if (norm) input.value = norm;
-      } catch (_) {
+      } catch(_) {
         if (username) input.value = username;
       }
-    } catch (_) { }
+    } catch (_) {}
   })();
 })();
 
@@ -155,20 +155,20 @@ try {
   const btnClose = el('rt-banner-close');
   const btnGo = el('rt-banner-go');
 
-  function showBanner(msg, sub) {
+  function showBanner(msg, sub){
     if (textEl) textEl.textContent = msg || 'Conectado com sucesso';
     if (subEl) subEl.textContent = sub || '';
     if (banner) banner.style.display = '';
   }
-  function hideBanner() { if (banner) banner.style.display = 'none'; }
+  function hideBanner(){ if (banner) banner.style.display = 'none'; }
 
   if (btnClose) btnClose.addEventListener('click', hideBanner);
-  if (btnGo) btnGo.addEventListener('click', function () {
-    try { if (typeof window.activateTab === 'function') return window.activateTab('text'); } catch (_) { }
+  if (btnGo) btnGo.addEventListener('click', function(){
+    try { if (typeof window.activateTab === 'function') return window.activateTab('text'); } catch(_) {}
     window.location.href = '/painel/envio';
   });
 
-  (async function connectSocket() {
+  (async function connectSocket(){
     try {
       const authToken = 'cookie';
       let uid = null;
@@ -176,13 +176,13 @@ try {
         const r = await window.authFetch('/me', { method: 'GET' });
         const j = await r.json().catch(() => ({}));
         uid = j?.user?.id || null;
-      } catch (_) { }
+      } catch (_) {}
       if (!uid) return;
 
       let ioClient = null;
       try { ioClient = window.io ? window.io() : null; } catch (e) { console.warn('[Socket.IO] indisponível no frontend:', e?.message || String(e)); return; }
       if (!ioClient) return;
-      try { ioClient.emit('register', { user_id: uid }); } catch (_) { }
+      try { ioClient.emit('register', { user_id: uid }); } catch (_) {}
 
       const evt = `instance_connected:${uid}`;
       const handleConnected = async () => {
@@ -194,7 +194,7 @@ try {
             details.instance = (d?.instance_name || d?.instance || '');
             details.deviceName = (d?.deviceName || d?.status?.deviceName || '');
             details.phone = (d?.phoneNumber || d?.status?.phoneNumber || '');
-          } catch (_) { }
+          } catch (_) {}
           const parts = [];
           if (details.instance) parts.push(`Instância: ${details.instance}`);
           if (details.deviceName) parts.push(`Dispositivo: ${details.deviceName}`);
@@ -214,7 +214,7 @@ try {
 })();
 
 // ---- Validations and API config (moved from inline) ----
-(function () {
+(function(){
   function isUrlLike(value) {
     if (!value) return false;
     const v = String(value).trim();
@@ -246,21 +246,21 @@ try {
       buttonEditors.forEach((_, i) => {
         const type = document.getElementById(`button-type-${cardId}-${i}`)?.value || '';
         const label = document.getElementById(`button-label-${cardId}-${i}`)?.value?.trim() || '';
-        if (!label) issues.push(`Cartão #${cardId} Botão #${i + 1}: falta label.`);
+        if (!label) issues.push(`Cartão #${cardId} Botão #${i+1}: falta label.`);
         if (type === 'URL') {
           const url = document.getElementById(`button-url-${cardId}-${i}`)?.value?.trim() || '';
           if (!url || !isUrlLike(url)) {
-            issues.push(`Cartão #${cardId} Botão #${i + 1}: informe um link válido (pode ser sem https).`);
+            issues.push(`Cartão #${cardId} Botão #${i+1}: informe um link válido (pode ser sem https).`);
           }
         } else if (type === 'CALL') {
           const phone = document.getElementById(`button-phone-${cardId}-${i}`)?.value?.trim() || '';
           if (!phone || !/^\d{10,15}$/.test(phone)) {
-            issues.push(`Cartão #${cardId} Botão #${i + 1}: informe um telefone válido com DDI (somente dígitos).`);
+            issues.push(`Cartão #${cardId} Botão #${i+1}: informe um telefone válido com DDI (somente dígitos).`);
           }
         } else if (type === 'COPY') {
           const copyText = document.getElementById(`button-copy-${cardId}-${i}`)?.value?.trim() || '';
           if (!copyText) {
-            issues.push(`Cartão #${cardId} Botão #${i + 1}: informe o texto para copiar (ex: CUPOM20).`);
+            issues.push(`Cartão #${cardId} Botão #${i+1}: informe o texto para copiar (ex: CUPOM20).`);
           }
         }
       });
@@ -276,88 +276,88 @@ try {
 })();
 
 // ---- Credits badge and series navigation ----
-(function () {
-  (async function setupCreditsBadge() {
-    const badge = document.getElementById('credits-badge');
-    if (!badge) return;
-    const authRole = localStorage.getItem('authRole') || '';
-    const hasSession = Boolean(authRole);
-    if (!hasSession) {
-      badge.style.display = 'none';
+(function(){
+(async function setupCreditsBadge() {
+  const badge = document.getElementById('credits-badge');
+  if (!badge) return;
+  const authRole = localStorage.getItem('authRole') || '';
+  const hasSession = Boolean(authRole);
+  if (!hasSession) {
+    badge.style.display = 'none';
+    return;
+  }
+  const cached = Number(localStorage.getItem('authCredits') || 0);
+  if (!Number.isNaN(cached)) {
+    badge.textContent = 'Créditos: ' + cached;
+    badge.style.display = 'inline-flex';
+  }
+  try {
+    const apiBase = (window.APP_API && window.APP_API.proxyBaseUrl) ? window.APP_API.proxyBaseUrl : window.location.origin;
+    const res = await window.authFetch(apiBase.replace(/\/$/, '') + '/me', { method: 'GET' });
+    if (!res.ok) return;
+    const data = await res.json();
+    const credits = Number(data?.user?.credits || 0);
+    badge.textContent = 'Créditos: ' + credits;
+    try { localStorage.setItem('authCredits', String(credits)); } catch (_) {}
+    badge.style.display = 'inline-flex';
+  } catch (_) {
+    if (!cached) {
+      badge.textContent = 'Créditos: 0';
+      badge.style.display = 'inline-flex';
+    }
+  }
+})();
+
+// ---- Expiry badge (dias restantes) ----
+(function(){
+(async function setupExpiryBadge() {
+  const badge = document.getElementById('expiry-badge');
+  if (!badge) return;
+  const role = localStorage.getItem('authRole') || '';
+  const hasSession = Boolean(role);
+  if (!hasSession) { badge.style.display = 'none'; return; }
+
+  function setBadgeStyleDanger() {
+    try {
+      badge.classList.remove('border-amber-400/50','bg-amber-500/10','text-amber-300');
+      badge.classList.add('border-red-400/40','bg-red-500/20','text-red-200');
+    } catch (_) {}
+  }
+  function setBadgeStyleWarn() {
+    try {
+      badge.classList.remove('border-red-400/40','bg-red-500/20','text-red-200');
+      badge.classList.add('border-amber-400/50','bg-amber-500/10','text-amber-300');
+    } catch (_) {}
+  }
+
+  // Oculta para administradores (sem prazo de expiração)
+  if (role === 'admin') { badge.style.display = 'none'; return; }
+
+  try {
+    const apiBase = (window.APP_API && window.APP_API.proxyBaseUrl) ? window.APP_API.proxyBaseUrl : window.location.origin;
+    const res = await window.authFetch(apiBase.replace(/\/$/, '') + '/me', { method: 'GET' });
+    if (!res.ok) { badge.textContent = 'Dias restantes: --'; badge.style.display = 'inline-flex'; return; }
+    const data = await res.json();
+    const expTs = Number(data?.user?.expires_at || 0);
+    if (!expTs) { badge.textContent = 'Dias restantes: --'; setBadgeStyleWarn(); badge.style.display = 'inline-flex'; return; }
+    const diff = expTs - Date.now();
+    if (diff <= 0) {
+      badge.textContent = 'Acesso expirado';
+      setBadgeStyleDanger();
+      badge.style.display = 'inline-flex';
       return;
     }
-    const cached = Number(localStorage.getItem('authCredits') || 0);
-    if (!Number.isNaN(cached)) {
-      badge.textContent = 'Créditos: ' + cached;
-      badge.style.display = 'inline-flex';
-    }
-    try {
-      const apiBase = (window.APP_API && window.APP_API.proxyBaseUrl) ? window.APP_API.proxyBaseUrl : window.location.origin;
-      const res = await window.authFetch(apiBase.replace(/\/$/, '') + '/me', { method: 'GET' });
-      if (!res.ok) return;
-      const data = await res.json();
-      const credits = Number(data?.user?.credits || 0);
-      badge.textContent = 'Créditos: ' + credits;
-      try { localStorage.setItem('authCredits', String(credits)); } catch (_) { }
-      badge.style.display = 'inline-flex';
-    } catch (_) {
-      if (!cached) {
-        badge.textContent = 'Créditos: 0';
-        badge.style.display = 'inline-flex';
-      }
-    }
-  })();
-
-  // ---- Expiry badge (dias restantes) ----
-  (function () {
-    (async function setupExpiryBadge() {
-      const badge = document.getElementById('expiry-badge');
-      if (!badge) return;
-      const role = localStorage.getItem('authRole') || '';
-      const hasSession = Boolean(role);
-      if (!hasSession) { badge.style.display = 'none'; return; }
-
-      function setBadgeStyleDanger() {
-        try {
-          badge.classList.remove('border-amber-400/50', 'bg-amber-500/10', 'text-amber-300');
-          badge.classList.add('border-red-400/40', 'bg-red-500/20', 'text-red-200');
-        } catch (_) { }
-      }
-      function setBadgeStyleWarn() {
-        try {
-          badge.classList.remove('border-red-400/40', 'bg-red-500/20', 'text-red-200');
-          badge.classList.add('border-amber-400/50', 'bg-amber-500/10', 'text-amber-300');
-        } catch (_) { }
-      }
-
-      // Oculta para administradores (sem prazo de expiração)
-      if (role === 'admin') { badge.style.display = 'none'; return; }
-
-      try {
-        const apiBase = (window.APP_API && window.APP_API.proxyBaseUrl) ? window.APP_API.proxyBaseUrl : window.location.origin;
-        const res = await window.authFetch(apiBase.replace(/\/$/, '') + '/me', { method: 'GET' });
-        if (!res.ok) { badge.textContent = 'Dias restantes: --'; badge.style.display = 'inline-flex'; return; }
-        const data = await res.json();
-        const expTs = Number(data?.user?.expires_at || 0);
-        if (!expTs) { badge.textContent = 'Dias restantes: --'; setBadgeStyleWarn(); badge.style.display = 'inline-flex'; return; }
-        const diff = expTs - Date.now();
-        if (diff <= 0) {
-          badge.textContent = 'Acesso expirado';
-          setBadgeStyleDanger();
-          badge.style.display = 'inline-flex';
-          return;
-        }
-        const days = Math.ceil(diff / (24 * 60 * 60 * 1000));
-        badge.textContent = 'Dias restantes: ' + days;
-        setBadgeStyleWarn();
-        badge.style.display = 'inline-flex';
-      } catch (_) {
-        badge.textContent = 'Dias restantes: --';
-        setBadgeStyleWarn();
-        badge.style.display = 'inline-flex';
-      }
-    })();
-  })();
+    const days = Math.ceil(diff / (24*60*60*1000));
+    badge.textContent = 'Dias restantes: ' + days;
+    setBadgeStyleWarn();
+    badge.style.display = 'inline-flex';
+  } catch (_) {
+    badge.textContent = 'Dias restantes: --';
+    setBadgeStyleWarn();
+    badge.style.display = 'inline-flex';
+  }
+})();
+})();
 
   function renderSeriesNav() {
     const container = document.getElementById('series-nav');
@@ -370,7 +370,7 @@ try {
       chip.addEventListener('click', () => {
         const sel = document.getElementById('carouselTemplate');
         if (sel) sel.value = t.id;
-        try { if (typeof window.loadCarouselTemplate === 'function') window.loadCarouselTemplate(); } catch (_) { }
+        try { if (typeof window.loadCarouselTemplate === 'function') window.loadCarouselTemplate(); } catch (_) {}
       });
       container.appendChild(chip);
     });
@@ -379,7 +379,7 @@ try {
 })();
 
 // ---- QR tab logic and message/webhook functions ----
-(function () {
+(function(){
   // --- Instance name helpers (shared with QR tab) ---
   function normalizeInstanceName(raw) {
     const s = String(raw || '').trim().toLowerCase();
@@ -460,8 +460,8 @@ try {
         return;
       }
       if (response.ok) {
-        log.innerText = '✅ Sua mensagem foi enviada com sucesso — GON KIT agradece';
-        try { Swal.fire({ icon: 'success', title: 'Mensagem enviada!', text: 'Seu texto foi enviado com sucesso.', confirmButtonText: 'Ok', customClass: { popup: 'swal-red-custom' } }); } catch (_) { }
+        log.innerText = '✅ Sua mensagem foi enviada com sucesso — Unlock Center agradece';
+        try { Swal.fire({ icon: 'success', title: 'Mensagem enviada!', text: 'Seu texto foi enviado com sucesso.', confirmButtonText: 'Ok', customClass: { popup: 'swal-red-custom' } }); } catch (_) {}
       } else {
         log.innerText = '❌ Erro ao enviar texto:\n' + JSON.stringify(data, null, 2);
       }
@@ -581,7 +581,7 @@ try {
           img.onerror = (e) => { qrLog(`Falha ao carregar imagem do QR: ${e?.message || 'erro desconhecido'}`); };
           img.style.display = '';
         }
-        try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.qr_shown', { page: 'index.js', is_http_url: typeof qr === 'string' && qr.startsWith('http') }); } catch (_) { }
+        try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.qr_shown', { page: 'index.js', is_http_url: typeof qr === 'string' && qr.startsWith('http') }); } catch (_) {}
         // Se for URL http(s), oferecer abertura em nova aba para contornar bloqueios
         const isHttpUrl = typeof qr === 'string' && qr.startsWith('http');
         if (isHttpUrl) {
@@ -593,22 +593,22 @@ try {
             openLink.rel = 'noopener noreferrer';
             openLink.className = 'underline text-emerald-300 ml-2';
             const anchorParent = document.getElementById('paircode-section') || document.getElementById('qr-status') || (img && img.parentNode);
-            try { if (anchorParent && anchorParent.parentNode) anchorParent.parentNode.insertBefore(openLink, anchorParent.nextSibling); } catch (_) { }
+            try { if (anchorParent && anchorParent.parentNode) anchorParent.parentNode.insertBefore(openLink, anchorParent.nextSibling); } catch (_) {}
           }
-          try { openLink.href = qr; openLink.style.display = ''; } catch (_) { }
+          try { openLink.href = qr; openLink.style.display = ''; } catch (_) {}
         } else {
-          if (openLink) { try { openLink.style.display = 'none'; } catch (_) { } }
+          if (openLink) { try { openLink.style.display = 'none'; } catch (_) {} }
         }
         if (placeholderEl) placeholderEl.style.display = 'none';
         if (statusEl) statusEl.textContent = 'QR atualizado. Escaneie no WhatsApp para parear.';
-        try { qrLog('Payload recebido para QR: ' + JSON.stringify(payload)); } catch (_) { }
+        try { qrLog('Payload recebido para QR: ' + JSON.stringify(payload)); } catch (_) {}
       } else {
         if (img) img.style.display = 'none';
-        if (openLink) { try { openLink.style.display = 'none'; } catch (_) { } }
+        if (openLink) { try { openLink.style.display = 'none'; } catch (_) {} }
         if (placeholderEl) placeholderEl.style.display = '';
         if (statusEl) statusEl.textContent = 'QR não encontrado no payload. Use Status ou Forçar QR.';
-        try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.qr_hidden', { page: 'index.js', reason: 'no_qr_in_payload', payload_keys: Object.keys(payload || {}) }); } catch (_) { }
-        try { qrLog('Payload sem QR detectável: ' + JSON.stringify(payload)); } catch (_) { }
+        try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.qr_hidden', { page: 'index.js', reason: 'no_qr_in_payload', payload_keys: Object.keys(payload || {}) }); } catch (_) {}
+        try { qrLog('Payload sem QR detectável: ' + JSON.stringify(payload)); } catch (_) {}
       }
     } catch (e) {
       qrLog(`Erro ao renderizar QR: ${e.message}`);
@@ -663,13 +663,13 @@ try {
           if (connected) {
             clearInterval(poll);
             qrLog('Instância conectada. Você já pode enviar mensagens.');
-            try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.poll_connected', { page: 'index.js', tries }); } catch (_) { }
+            try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.poll_connected', { page: 'index.js', tries }); } catch (_) {}
           } else if (tries >= 8) {
             clearInterval(poll);
-            try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.poll_stopped_no_connect', { page: 'index.js', tries }); } catch (_) { }
-            try { await qrGetQr(true); } catch (_) { }
+            try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.poll_stopped_no_connect', { page: 'index.js', tries }); } catch (_) {}
+            try { await qrGetQr(true); } catch (_) {}
           }
-        } catch (_) { }
+        } catch (_) {}
       }, 1000);
     } catch (e) {
       qrLog(`Erro ao conectar: ${e.message}`);
@@ -708,7 +708,7 @@ try {
     }
   }
   window.qrGetQr = qrGetQr;
-
+ 
   async function qrGetStatus() {
     const hasUser = !!(localStorage.getItem('authUser') || '').trim();
     if (!hasUser) { qrLog('Faça login para obter o status.'); return; }
@@ -719,9 +719,9 @@ try {
         const connected = Boolean(data?.status?.connected);
         const statusEl = document.getElementById('qr-status');
         if (statusEl) statusEl.textContent = connected ? '✅ WhatsApp conectado.' : '❌ Instância não conectada.';
-        try { qrLog('Status da instância:\n' + JSON.stringify(data, null, 2)); } catch (_) { }
+        try { qrLog('Status da instância:\n' + JSON.stringify(data, null, 2)); } catch (_) {}
         // Se o payload tiver QR/paircode úteis, renderiza
-        try { renderQrFromPayload(data); } catch (_) { }
+        try { renderQrFromPayload(data); } catch (_) {}
       } else {
         qrLog('❌ Erro ao obter status:\n' + JSON.stringify(data, null, 2));
       }
@@ -808,7 +808,7 @@ try {
             const bindResp = await window.authFetch(`${__base}/user/bind-instance`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { instance: ensuredName } });
             await bindResp.json().catch(() => ({}));
             qrLog(`Instância garantida para o usuário: ${ensuredName}`);
-          } catch (_) { }
+          } catch (_) {}
         } else {
           const rawName = document.getElementById('qr-instance')?.value?.trim() || '';
           const name = normalizeInstanceName(rawName);
@@ -842,7 +842,7 @@ try {
           }
         }
       }
-    } catch (_) { }
+    } catch (_) {}
     // Passo 1: tentar conectar; se falhar por token ausente, seguir para forçar QR
     try {
       const response = await window.authFetch(`${__base}/user/connect-instance`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: { phone } });
@@ -855,43 +855,43 @@ try {
         const tokenEl = document.getElementById('qr-token');
         const token = tokenEl && tokenEl.value ? String(tokenEl.value).trim() : '';
         if (instName) startInstanceSse({ instance: instName, timeoutMs: 120000 });
-      } catch (_) { }
+      } catch (_) {}
     } catch (e) {
       qrLog(`Aviso: conexão não concluída imediatamente: ${e.message}. Prosseguindo com force QR.`);
     }
     // Passo 2: forçar QR com pequenas re-tentativas
-    try { await qrGetQr(true); } catch (_) { }
-    try { await new Promise(r => setTimeout(r, 2000)); await qrGetQr(true); } catch (_) { }
-    try { await new Promise(r => setTimeout(r, 3000)); await qrGetQr(true); } catch (_) { }
+    try { await qrGetQr(true); } catch (_) {}
+    try { await new Promise(r => setTimeout(r, 2000)); await qrGetQr(true); } catch (_) {}
+    try { await new Promise(r => setTimeout(r, 3000)); await qrGetQr(true); } catch (_) {}
   }
   window.qrConnectThenForceQr = qrConnectThenForceQr;
 
   // --- SSE para atualizar QR em tempo real ---
   let sseSource = null;
   let sseTimer = null;
-  function stopInstanceSse() {
-    try { if (sseTimer) { clearTimeout(sseTimer); sseTimer = null; } } catch (_) { }
-    try { if (sseSource) { sseSource.close(); sseSource = null; } } catch (_) { }
+  function stopInstanceSse(){
+    try { if (sseTimer) { clearTimeout(sseTimer); sseTimer = null; } } catch (_) {}
+    try { if (sseSource) { sseSource.close(); sseSource = null; } } catch (_) {}
   }
   function startInstanceSse({ instance, timeoutMs = 120000 }) {
-    try { stopInstanceSse(); } catch (_) { }
+    try { stopInstanceSse(); } catch (_) {}
     if (!instance) return;
     const qs = new URLSearchParams({ instance });
     const url = `/qr-events?${qs.toString()}`;
     try {
       sseSource = new EventSource(url);
-      sseSource.addEventListener('open', () => { qrLog(`SSE aberto para ${instance}`); try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_open', { page: 'index.js', instance }); } catch (_) { } });
+      sseSource.addEventListener('open', () => { qrLog(`SSE aberto para ${instance}`); try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_open', { page: 'index.js', instance }); } catch (_) {} });
       sseSource.addEventListener('status', (ev) => {
         try {
           const data = JSON.parse(ev.data || '{}');
-          try { renderQrFromPayload({ status: { qrcode: data.qrcode, paircode: data.paircode } }); } catch (_) { }
+          try { renderQrFromPayload({ status: { qrcode: data.qrcode, paircode: data.paircode } }); } catch (_) {}
           const connected = Boolean(data.connected || ['connected', 'ready'].includes(String(data.state || '').toLowerCase()));
-          if (connected) { try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_status_connected', { page: 'index.js', instance }); } catch (_) { } }
-        } catch (_) { }
+          if (connected) { try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_status_connected', { page: 'index.js', instance }); } catch (_) {} }
+        } catch (_) {}
       });
-      sseSource.addEventListener('connected', () => { try { qrLog('SSE: instância conectada.'); } catch (_) { }; try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_connected_event', { page: 'index.js', instance }); } catch (_) { } });
-      sseSource.addEventListener('error', (ev) => { qrLog(`SSE erro: ${ev?.message || 'desconhecido'}`); try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_error', { page: 'index.js', instance, error: ev?.message || 'desconhecido' }); } catch (_) { } });
-      sseTimer = setTimeout(() => { try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_timeout_no_confirm', { page: 'index.js', instance, timeoutMs }); } catch (_) { }; stopInstanceSse(); }, timeoutMs);
+      sseSource.addEventListener('connected', () => { try { qrLog('SSE: instância conectada.'); } catch (_) {} ; try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_connected_event', { page: 'index.js', instance }); } catch (_) {} });
+      sseSource.addEventListener('error', (ev) => { qrLog(`SSE erro: ${ev?.message || 'desconhecido'}`); try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_error', { page: 'index.js', instance, error: ev?.message || 'desconhecido' }); } catch (_) {} });
+      sseTimer = setTimeout(() => { try { if (window.qrFlowLog) window.qrFlowLog('qr.flow.sse_timeout_no_confirm', { page: 'index.js', instance, timeoutMs }); } catch (_) {} ; stopInstanceSse(); }, timeoutMs);
     } catch (e) { qrLog(`Falha ao iniciar SSE: ${e.message}`); }
   }
   window.__stopInstanceSse = stopInstanceSse;
@@ -902,5 +902,5 @@ try {
   const discBtn = document.getElementById('btn-disconnect-instance');
   if (genBtn) genBtn.addEventListener('click', () => qrConnectThenForceQr());
   if (forceBtn) forceBtn.addEventListener('click', () => qrGetQr(true));
-  if (discBtn) discBtn.addEventListener('click', (e) => { try { if (e && typeof e.preventDefault === 'function') e.preventDefault(); } catch (_) { }; try { if (e && typeof e.stopPropagation === 'function') e.stopPropagation(); } catch (_) { }; disconnectInstance(); });
+  if (discBtn) discBtn.addEventListener('click', (e) => { try { if (e && typeof e.preventDefault === 'function') e.preventDefault(); } catch (_) {} ; try { if (e && typeof e.stopPropagation === 'function') e.stopPropagation(); } catch (_) {} ; disconnectInstance(); });
 })();
