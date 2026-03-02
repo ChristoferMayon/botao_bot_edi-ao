@@ -14,9 +14,8 @@
 body {
     margin: 0;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
-    background: transparent;
+    background: #000 url('../image/OIG3.jpg') center / cover no-repeat fixed;
     color: var(--text);
-    min-height: 100vh;
 }
 
 header {

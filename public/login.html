@@ -22,12 +22,6 @@
 </head>
 
 <body>
-  <!-- Fundo 3D Interativo (Spline) com o Robô que segue o cursor -->
-  <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3;">
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.51/build/spline-viewer.js"></script>
-    <!-- URL de um exemplo de cena 3D interativa. Se tiver a sua própria cena do Spline, substitua a URL abaixo -->
-    <spline-viewer url="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode"></spline-viewer>
-  </div>
 
   <div id="google_translate_element"></div>
   <script>
@@ -70,8 +64,11 @@
           rel="noopener">@UnlockCenterSuport</a></div>
     </div>
   </main>
+
   <script src="./js/common_auth.js" defer></script>
   <script src="./js/login.js" defer></script>
+  <!-- Interactive Reptile Cursor Script -->
+  <script src="../Reptile%20Interactive%20Cursor/script.js" defer></script>
 </body>
 
 </html>
