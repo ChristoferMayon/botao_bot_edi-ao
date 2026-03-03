@@ -1,135 +1,354 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Painel Administrativo</title>
-<link rel="stylesheet" href="./css/admin.css">
+  <link rel="stylesheet" href="./css/admin.css">
   <style>
-    :root { --bg:#0f172a; --panel:#111827; --panel-weak:#1b2433; --muted:#6b7280; --primary:#10B981; --danger:#ef4444; --text:#e5e7eb; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif; background: var(--bg); color: var(--text); }
-    header { padding: 16px; background: #0b1220; border-bottom: 1px solid #1f2937; }
-    header h1 { margin: 0; font-size: 20px; }
-    main { padding: 16px; max-width: 1100px; margin: 0 auto; }
-    .card { background: var(--panel); border: 1px solid #1f2937; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-    .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 768px) { .row-2 { grid-template-columns: 1fr 1fr; } }
-    label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 13px; }
-    input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #0b1220; color: var(--text); }
-    button { cursor: pointer; border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 600; }
-    .btn { background: #1f2937; color: var(--text); }
-    .btn-primary { background: var(--primary); color: #03281f; }
-    .btn-danger { background: var(--danger); color: #13080a; }
-    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border-bottom: 1px solid #1f2937; padding: 10px; text-align: left; font-size: 14px; }
-    th { color: var(--muted); font-weight: 600; }
-    .muted { color: var(--muted); font-size: 12px; }
-    .tag { display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: #0b1220; border: 1px solid #374151; }
-    .tag.green { color: #16a34a; border-color: #14532d; }
-    .tag.red { color: #ef4444; border-color: #7f1d1d; }
-    .tag.blue { color: #3b82f6; border-color: #1e3a8a; }
-    .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
-    .modal { background: var(--panel); border: 1px solid #1f2937; border-radius: 10px; padding: 16px; width: 90%; max-width: 420px; }
-    
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-weak: #1b2433;
+      --muted: #6b7280;
+      --primary: #10B981;
+      --danger: #ef4444;
+      --text: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      padding: 16px;
+      background: #0b1220;
+      border-bottom: 1px solid #1f2937;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    main {
+      padding: 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .row-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #0b1220;
+      color: var(--text);
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+
+    .btn {
+      background: #1f2937;
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #03281f;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #13080a;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid #1f2937;
+      padding: 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #0b1220;
+      border: 1px solid #374151;
+    }
+
+    .tag.green {
+      color: #16a34a;
+      border-color: #14532d;
+    }
+
+    .tag.red {
+      color: #ef4444;
+      border-color: #7f1d1d;
+    }
+
+    .tag.blue {
+      color: #3b82f6;
+      border-color: #1e3a8a;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: var(--panel);
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 16px;
+      width: 90%;
+      max-width: 420px;
+    }
+
     /* Responsividade para tabela de usuários */
     @media (max-width: 767px) {
-      .users-table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-      .users-table { min-width: 700px; font-size: 12px; }
-      .users-table th, .users-table td { padding: 8px 6px; white-space: nowrap; }
-      .users-table .actions { 
-        display: flex; 
-        flex-direction: column; 
-        gap: 2px; 
-        min-width: 160px; 
+      .users-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .users-table {
+        min-width: 700px;
+        font-size: 12px;
+      }
+
+      .users-table th,
+      .users-table td {
+        padding: 8px 6px;
+        white-space: nowrap;
+      }
+
+      .users-table .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 160px;
         align-items: stretch;
       }
-      .users-table .actions button { 
-        font-size: 9px; 
-        padding: 4px 6px; 
-        white-space: nowrap; 
+
+      .users-table .actions button {
+        font-size: 9px;
+        padding: 4px 6px;
+        white-space: nowrap;
         border-radius: 3px;
         min-height: 24px;
         text-align: center;
         line-height: 1.2;
       }
-      .users-table .tag { font-size: 10px; padding: 1px 6px; }
-      .users-table .muted { font-size: 10px; }
+
+      .users-table .tag {
+        font-size: 10px;
+        padding: 1px 6px;
+      }
+
+      .users-table .muted {
+        font-size: 10px;
+      }
     }
-    
+
     /* Melhorias gerais para mobile */
     @media (max-width: 480px) {
-      main { padding: 12px; }
-      .card { padding: 12px; margin-bottom: 12px; }
-      .users-table { font-size: 11px; }
-      .users-table th, .users-table td { padding: 6px 4px; }
-      .users-table .actions { 
+      main {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .users-table {
+        font-size: 11px;
+      }
+
+      .users-table th,
+      .users-table td {
+        padding: 6px 4px;
+      }
+
+      .users-table .actions {
         min-width: 140px;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 2px;
       }
-      .users-table .actions button { 
-        font-size: 8px; 
-        padding: 3px 4px; 
+
+      .users-table .actions button {
+        font-size: 8px;
+        padding: 3px 4px;
         min-height: 22px;
         border-radius: 2px;
       }
-      .grid-3 { grid-template-columns: 1fr; }
-      .row-2 { grid-template-columns: 1fr; }
-      .actions { flex-direction: column; align-items: stretch; }
-      .actions button { margin-bottom: 4px; }
+
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .row-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .actions button {
+        margin-bottom: 4px;
+      }
     }
-    
+
     /* Estilos adicionais para melhor UX mobile */
     @media (max-width: 767px) {
-      header { padding: 12px; }
-      header h1 { font-size: 18px; }
-      .modal { width: 95%; padding: 12px; }
-      input, select { font-size: 16px; } /* Evita zoom no iOS */
+      header {
+        padding: 12px;
+      }
+
+      header h1 {
+        font-size: 18px;
+      }
+
+      .modal {
+        width: 95%;
+        padding: 12px;
+      }
+
+      input,
+      select {
+        font-size: 16px;
+      }
+
+      /* Evita zoom no iOS */
     }
-    
+
     /* Estilos para funcionalidade de expansão dos usuários */
     .user-row {
       transition: background-color 0.2s ease;
     }
-    
+
     .user-row:hover {
       background-color: rgba(0, 123, 255, 0.05);
     }
-    
+
     .user-row.expanded {
       background-color: rgba(0, 123, 255, 0.1);
     }
-    
+
     .expand-indicator {
       text-align: center;
       width: 40px;
     }
-    
+
     .expand-arrow {
       font-size: 12px;
       color: #666;
       transition: transform 0.2s ease;
     }
-    
+
     .user-actions-row {
       background-color: var(--panel-weak);
     }
+
     /* Permite que o conteúdo dentro da linha expandida quebre linha normalmente */
     .user-actions-row td {
       white-space: normal !important;
     }
-    
+
     .user-actions-container {
       padding: 15px;
       border-top: 1px solid #1f2937;
       background: var(--panel-weak);
     }
-    
+
     .user-actions-grid {
       display: flex;
       flex-wrap: wrap;
@@ -137,67 +356,71 @@
       justify-content: flex-start;
       align-items: stretch;
     }
-    
+
     .user-actions-grid button {
       padding: 8px 12px;
       font-size: 12px;
       border-radius: 4px;
       min-height: 32px;
       transition: all 0.2s ease;
-      white-space: nowrap; /* Mantém lado a lado */
+      white-space: nowrap;
+      /* Mantém lado a lado */
       line-height: 1.2;
       text-align: center;
       min-width: 110px;
     }
+
     /* Cores mais visíveis para os botões nas abas expandidas */
     .user-actions-grid button.btn,
     .admin-actions button.btn {
-      background: rgba(255,255,255,0.08);
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid #334155;
       color: var(--text);
     }
+
     .user-actions-grid button.btn:hover,
     .admin-actions button.btn:hover {
-      background: rgba(255,255,255,0.12);
+      background: rgba(255, 255, 255, 0.12);
       filter: brightness(1.05);
     }
-    
+
     /* Responsividade para expansão em mobile */
     @media (max-width: 767px) {
       .user-row {
         cursor: pointer;
       }
-      
+
       .user-row:active {
         background-color: rgba(0, 123, 255, 0.15);
       }
-      
+
       .user-actions-grid {
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
       }
-      
+
       .user-actions-grid button {
         font-size: 11px;
         padding: 6px 8px;
         min-height: 28px;
-        touch-action: manipulation; /* Melhora responsividade ao toque */
+        touch-action: manipulation;
+        /* Melhora responsividade ao toque */
       }
-      
+
       .user-actions-container {
         padding: 12px;
       }
-      
+
       .expand-indicator {
         width: 30px;
         padding: 8px;
       }
-      
+
       .expand-arrow {
         font-size: 14px;
       }
-      
+
       /* Adicionar indicação visual de que a linha é clicável */
       .user-row td:first-child::before {
         content: "👆 ";
@@ -212,14 +435,14 @@
         flex-wrap: wrap;
         gap: 4px;
       }
-      
+
       .user-actions-grid button {
         font-size: 10px;
         padding: 5px 6px;
         min-height: 26px;
         min-width: 92px;
       }
-      
+
       .user-actions-container {
         padding: 10px;
       }
@@ -233,6 +456,7 @@
       justify-content: flex-start;
       align-items: stretch;
     }
+
     .admin-actions button {
       white-space: nowrap;
       min-width: 110px;
@@ -240,29 +464,50 @@
       padding: 4px 6px;
       min-height: 24px;
     }
+
     @media (max-width: 767px) {
-      .admin-actions { gap: 4px; }
-      .admin-actions button { min-width: 100px; font-size: 9px; padding: 4px 5px; min-height: 22px; }
+      .admin-actions {
+        gap: 4px;
+      }
+
+      .admin-actions button {
+        min-width: 100px;
+        font-size: 9px;
+        padding: 4px 5px;
+        min-height: 22px;
+      }
     }
+
     @media (max-width: 480px) {
-      .admin-actions { gap: 3px; }
-      .admin-actions button { min-width: 92px; font-size: 8px; padding: 3px 4px; min-height: 20px; }
+      .admin-actions {
+        gap: 3px;
+      }
+
+      .admin-actions button {
+        min-width: 92px;
+        font-size: 8px;
+        padding: 3px 4px;
+        min-height: 20px;
+      }
     }
-    
+
     /* Melhorias específicas para botões de ação em mobile */
     @media (max-width: 480px) {
+
       .users-table .actions button.btn-primary,
       .user-actions-grid button.btn-primary {
         background: var(--primary);
         color: #03281f;
         font-weight: 600;
       }
+
       .users-table .actions button.btn-danger,
       .user-actions-grid button.btn-danger {
         background: var(--danger);
         color: #13080a;
         font-weight: 600;
       }
+
       .users-table .actions button:hover,
       .user-actions-grid button:hover {
         opacity: 0.8;
@@ -271,6 +516,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Painel Administrativo</h1>
@@ -297,7 +543,8 @@
         <button id="admin-logout-btn" class="btn">Sair</button>
         <span id="admin-login-status" class="muted"></span>
       </div>
-      <div class="muted" style="margin-top:8px">Dica: usuário inicial é semeado via `ADMIN_USERNAME`/`ADMIN_PASSWORD` (padrão admin/admin em dev, altere em produção).</div>
+      <div class="muted" style="margin-top:8px">Dica: usuário inicial é semeado via `ADMIN_USERNAME`/`ADMIN_PASSWORD`
+        (padrão admin/admin em dev, altere em produção).</div>
     </section>
 
     <section class="card">
@@ -358,6 +605,41 @@
             </tr>
           </thead>
           <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- NOVO: Gerenciar DDIs de Países -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">Gerenciar Países (DDI)</h2>
+      <div class="grid grid-3">
+        <div>
+          <label>Nome do País</label>
+          <input id="new-country-name" placeholder="Ex: Portugal" />
+        </div>
+        <div>
+          <label>Código DDI</label>
+          <input id="new-country-code" placeholder="Ex: 351" />
+        </div>
+        <div style="display:flex; align-items:flex-end;">
+          <button id="add-country-btn" class="btn-primary" style="width: 100%;">Adicionar País</button>
+        </div>
+      </div>
+      <div class="actions" style="margin-top:10px; margin-bottom:8px">
+        <button id="refresh-countries-btn" class="btn">Atualizar lista</button>
+        <span id="country-status" class="muted"></span>
+      </div>
+      <div class="users-table-container" style="overflow:auto; max-height: 400px;">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Nome do País</th>
+              <th>Código DDI</th>
+              <th>ID</th>
+              <th style="width: 80px;">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="countries-tbody"></tbody>
         </table>
       </div>
     </section>
@@ -897,6 +1179,91 @@
       } catch (e) { alert('Erro: ' + e.message); }
     }
 
+    // --- Lógica de Países (DDI) ---
+    async function loadCountries() {
+      const statusSpan = document.getElementById('country-status');
+      statusSpan.textContent = 'Carregando países...';
+      try {
+        const res = await fetch(apiBase + '/countries');
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Falha ao buscar países');
+        renderCountries(data.countries || []);
+        statusSpan.textContent = `${(data.countries || []).length} países carregados.`;
+      } catch (e) {
+        statusSpan.textContent = 'Erro: ' + e.message;
+      }
+    }
+
+    function renderCountries(countries) {
+      const tbody = document.getElementById('countries-tbody');
+      tbody.innerHTML = '';
+      countries.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${c.name}</td>
+          <td>+${c.code}</td>
+          <td><span class="muted">${c.id}</span></td>
+          <td></td>
+        `;
+        const actionTd = tr.querySelector('td:last-child');
+        const btnDel = document.createElement('button');
+        btnDel.className = 'btn-danger';
+        btnDel.textContent = 'Remover';
+        btnDel.style.padding = '4px 8px';
+        btnDel.style.fontSize = '12px';
+        btnDel.onclick = () => deleteCountry(c._id, c.name);
+        actionTd.appendChild(btnDel);
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function addCountry() {
+      const token = getAdminToken();
+      if (!token) { alert('Faça login como admin para adicionar países'); return; }
+      const name = document.getElementById('new-country-name').value.trim();
+      const code = document.getElementById('new-country-code').value.trim();
+      const statusSpan = document.getElementById('country-status');
+      
+      if (!name || !code) { statusSpan.textContent = 'Preencha Nome e Código DDI'; return; }
+      statusSpan.textContent = 'Adicionando...';
+      
+      try {
+        const res = await fetch(apiBase + '/admin/countries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ name, code })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Falha ao adicionar país');
+        
+        document.getElementById('new-country-name').value = '';
+        document.getElementById('new-country-code').value = '';
+        statusSpan.textContent = 'País adicionado com sucesso!';
+        loadCountries();
+      } catch (e) {
+        statusSpan.textContent = 'Erro: ' + e.message;
+      }
+    }
+
+    async function deleteCountry(id, name) {
+      const token = getAdminToken();
+      if (!token) { alert('Faça login como admin'); return; }
+      if (!confirm(`Tem certeza que deseja remover o país: ${name}?`)) return;
+      try {
+        const res = await fetch(apiBase + '/admin/countries/' + id, {
+          method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Falha ao remover');
+        loadCountries();
+      } catch (e) { alert('Erro: ' + e.message); }
+    }
+
+    // Listeners DDI
+    document.getElementById('add-country-btn').addEventListener('click', addCountry);
+    document.getElementById('refresh-countries-btn').addEventListener('click', loadCountries);
+    // --- FIM: Lógica de Países (DDI) ---
+
     // Auto-login dev se ADMIN_USERNAME/PASSWORD padrão
     (function autoFill() {
       document.getElementById('admin-user').value = 'admin';
@@ -911,12 +1278,13 @@
       if (token && role === 'admin') {
         if (loginCard) loginCard.style.display = 'none';
         setAdminStatus('Conectado como ' + (username || 'admin'));
-        // Carrega usuários automaticamente
-        try { loadUsers(); } catch (_) {}
+        // Carrega usuários e países automaticamente
+        try { loadUsers(); loadCountries(); } catch (_) {}
       }
     })();
   </script>
-<script src="./js/common_auth.js"></script>
-<script src="./js/admin.js"></script>
+  <script src="./js/common_auth.js"></script>
+  <script src="./js/admin.js"></script>
 </body>
+
 </html>
