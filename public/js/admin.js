@@ -1,5 +1,5 @@
 // Lógica do painel administrativo extraída para arquivo externo (compatível com CSP)
-(function(){
+(function () {
   const apiBase = (window.API_BASE || (window.location.port === '3002' ? 'https://127.0.0.1:3001' : window.location.origin)).replace(/\/$/, '');
 
   function fmtDate(ts) {
@@ -11,7 +11,7 @@
     if (!ts) return '-';
     const diff = Number(ts) - Date.now();
     if (diff <= 0) return 'expirado';
-    return Math.ceil(diff / (24*60*60*1000)) + 'd';
+    return Math.ceil(diff / (24 * 60 * 60 * 1000)) + 'd';
   }
   function getAdminToken() {
     // Migração para cookies HttpOnly: não usamos mais token Bearer.
@@ -36,26 +36,26 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Falha no login');
       // Define sessão local baseada em papel; cookies já foram setados pelo backend
-      try { localStorage.removeItem('adminToken'); } catch(_){}
+      try { localStorage.removeItem('adminToken'); } catch (_) { }
       localStorage.setItem('authRole', 'admin');
       localStorage.setItem('authUser', data.user?.username || username);
       setAdminStatus('Conectado como ' + (data.user?.username || username));
       // Opcional: carregar usuários automaticamente após login
-      try { loadUsers(); } catch(_){}
+      try { loadUsers(); } catch (_) { }
     } catch (e) {
       setAdminStatus('Erro: ' + e.message);
     }
   }
   function adminLogout() {
     // Limpa cookie de autenticação no backend e estado local
-    try { authFetch(apiBase + '/logout', { method: 'POST' }); } catch(_){}
+    try { authFetch(apiBase + '/logout', { method: 'POST' }); } catch (_) { }
     try {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('authToken');
       localStorage.removeItem('authRole');
       localStorage.removeItem('authUser');
       localStorage.removeItem('authCredits');
-    } catch(_){}
+    } catch (_) { }
     setAdminStatus('Desconectado');
   }
 
@@ -83,7 +83,7 @@
   }
 
   // Ajusta validade quando papel for admin (admins não possuem validade)
-  function setupRoleDaysToggle(){
+  function setupRoleDaysToggle() {
     try {
       const roleSel = document.getElementById('new-role');
       const daysInput = document.getElementById('new-days');
@@ -98,7 +98,7 @@
         roleSel.addEventListener('change', update);
         update();
       }
-    } catch (_) {}
+    } catch (_) { }
   }
 
   async function loadUsers() {
@@ -175,7 +175,7 @@
     });
   }
 
-  function actionBtn(text, handler, cls='btn') {
+  function actionBtn(text, handler, cls = 'btn') {
     const b = document.createElement('button');
     b.className = cls; b.textContent = text; b.onclick = handler; return b;
   }
@@ -225,7 +225,7 @@
     input.value = '1';
     info.textContent = 'Créditos atuais do usuário: ' + transferModalUserCredits + '. Isso debita do admin.';
     document.getElementById('transfer-modal').style.display = 'flex';
-    setTimeout(() => { try { input.focus(); } catch(_){} }, 0);
+    setTimeout(() => { try { input.focus(); } catch (_) { } }, 0);
   }
   function closeTransferModal() {
     transferModalUserId = null;
@@ -271,7 +271,7 @@
     const base = addDaysModalCurrentExp && addDaysModalCurrentExp > now ? addDaysModalCurrentExp : now;
     info.textContent = 'Validade atual: ' + (addDaysModalCurrentExp ? new Date(addDaysModalCurrentExp).toLocaleString('pt-BR') : 'não definida/expirada') + '. Isto soma dias ao prazo.';
     document.getElementById('add-days-modal').style.display = 'flex';
-    setTimeout(() => { try { input.focus(); } catch(_){} }, 0);
+    setTimeout(() => { try { input.focus(); } catch (_) { } }, 0);
   }
   function closeAddDaysModal() {
     addDaysModalUserId = null;
@@ -311,7 +311,7 @@
     status.textContent = '';
     input.value = '';
     document.getElementById('password-modal').style.display = 'flex';
-    setTimeout(() => { try { input.focus(); } catch(_){} }, 0);
+    setTimeout(() => { try { input.focus(); } catch (_) { } }, 0);
   }
   function closePasswordModal() {
     passwordModalUserId = null;
@@ -340,7 +340,7 @@
     input.value = '0';
     info.textContent = 'Créditos atuais: ' + creditsModalCurrent + ' | Informe quanto deseja adicionar.';
     document.getElementById('credits-modal').style.display = 'flex';
-    setTimeout(() => { try { input.focus(); } catch(_){} }, 0);
+    setTimeout(() => { try { input.focus(); } catch (_) { } }, 0);
   }
   function closeCreditsModal() {
     creditsModalUserId = null;
@@ -370,7 +370,7 @@
     input.value = usernameModalCurrent;
     info.textContent = 'Nome atual: ' + usernameModalCurrent;
     document.getElementById('username-modal').style.display = 'flex';
-    setTimeout(() => { try { input.focus(); } catch(_){} }, 0);
+    setTimeout(() => { try { input.focus(); } catch (_) { } }, 0);
   }
   function closeUsernameModal() {
     usernameModalUserId = null;
@@ -386,7 +386,7 @@
     try {
       await updateUser(usernameModalUserId, { username: name });
       closeUsernameModal();
-      try { const authRole = localStorage.getItem('authRole') || ''; if (authRole === 'admin') localStorage.setItem('authUser', name); } catch (_) {}
+      try { const authRole = localStorage.getItem('authRole') || ''; if (authRole === 'admin') localStorage.setItem('authUser', name); } catch (_) { }
     } catch (e) {
       status.textContent = 'Erro: ' + (e?.message || e);
     }
@@ -404,6 +404,89 @@
     } catch (e) { alert('Erro: ' + e.message); }
   }
 
+  // --- Lógica de Países (DDI) ---
+  async function loadCountries() {
+    const statusSpan = document.getElementById('country-status');
+    if (!statusSpan) return;
+    statusSpan.textContent = 'Carregando países...';
+    try {
+      const res = await authFetch(apiBase + '/countries');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Falha ao buscar países');
+      renderCountries(data.countries || []);
+      statusSpan.textContent = `${(data.countries || []).length} países carregados.`;
+    } catch (e) {
+      statusSpan.textContent = 'Erro: ' + e.message;
+    }
+  }
+
+  function renderCountries(countries) {
+    const tbody = document.getElementById('countries-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    countries.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${c.name}</td>
+        <td>+${c.code}</td>
+        <td><span class="muted">${c.id}</span></td>
+        <td></td>
+      `;
+      const actionTd = tr.querySelector('td:last-child');
+      const btnDel = document.createElement('button');
+      btnDel.className = 'btn-danger';
+      btnDel.textContent = 'Remover';
+      btnDel.style.padding = '4px 8px';
+      btnDel.style.fontSize = '12px';
+      btnDel.onclick = () => deleteCountry(c._id, c.name);
+      actionTd.appendChild(btnDel);
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function addCountry() {
+    const isAdmin = !!getAdminToken();
+    if (!isAdmin) { alert('Faça login como admin para adicionar países'); return; }
+    const name = document.getElementById('new-country-name').value.trim();
+    const code = document.getElementById('new-country-code').value.trim();
+    const statusSpan = document.getElementById('country-status');
+
+    if (!name || !code) { statusSpan.textContent = 'Preencha Nome e Código DDI'; return; }
+    statusSpan.textContent = 'Adicionando...';
+
+    try {
+      const res = await authFetch(apiBase + '/admin/countries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: { name, code }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Falha ao adicionar país');
+
+      document.getElementById('new-country-name').value = '';
+      document.getElementById('new-country-code').value = '';
+      statusSpan.textContent = 'País adicionado com sucesso!';
+      loadCountries();
+    } catch (e) {
+      statusSpan.textContent = 'Erro: ' + e.message;
+    }
+  }
+
+  async function deleteCountry(id, name) {
+    const isAdmin = !!getAdminToken();
+    if (!isAdmin) { alert('Faça login como admin'); return; }
+    if (!confirm(`Tem certeza que deseja remover o país: ${name}?`)) return;
+    try {
+      const res = await authFetch(apiBase + '/admin/countries/' + id, {
+        method: 'DELETE'
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Falha ao remover');
+      loadCountries();
+    } catch (e) { alert('Erro: ' + e.message); }
+  }
+  // --- FIM: Lógica de Países (DDI) ---
+
   let chatIdModalUserId = null;
   let chatIdModalCurrent = '';
   function openChatIdModal(userId, currentChatId) {
@@ -416,7 +499,7 @@
     input.value = chatIdModalCurrent || '';
     info.textContent = 'Chat ID atual: ' + (chatIdModalCurrent || '-');
     document.getElementById('chatid-modal').style.display = 'flex';
-    setTimeout(() => { try { input.focus(); } catch(_){} }, 0);
+    setTimeout(() => { try { input.focus(); } catch (_) { } }, 0);
   }
   function closeChatIdModal() {
     chatIdModalUserId = null;
@@ -440,14 +523,14 @@
     if (role === 'admin') {
       if (loginCard) loginCard.style.display = 'none';
       setAdminStatus('Conectado como ' + (username || 'admin'));
-      try { loadUsers(); } catch (_) {}
+      try { loadUsers(); loadCountries(); } catch (_) { }
     }
   }
 
   window.addEventListener('DOMContentLoaded', () => {
     // Botões principais
     const backBtn = document.getElementById('back-btn');
-if (backBtn) backBtn.addEventListener('click', () => { window.location.href = '/dashboard'; });
+    if (backBtn) backBtn.addEventListener('click', () => { window.location.href = '/dashboard'; });
     const loginBtn = document.getElementById('admin-login-btn');
     if (loginBtn) loginBtn.addEventListener('click', adminLogin);
     const logoutBtn = document.getElementById('admin-logout-btn');
@@ -456,6 +539,12 @@ if (backBtn) backBtn.addEventListener('click', () => { window.location.href = '/
     if (createBtn) createBtn.addEventListener('click', createUser);
     const refreshBtn = document.getElementById('refresh-users-btn');
     if (refreshBtn) refreshBtn.addEventListener('click', loadUsers);
+
+    // DDI Botões
+    const addCountryBtn = document.getElementById('add-country-btn');
+    if (addCountryBtn) addCountryBtn.addEventListener('click', addCountry);
+    const refreshCountriesBtn = document.getElementById('refresh-countries-btn');
+    if (refreshCountriesBtn) refreshCountriesBtn.addEventListener('click', loadCountries);
 
     // Modais: senhas
     const pwCancel = document.getElementById('password-cancel-btn');
@@ -493,7 +582,7 @@ if (backBtn) backBtn.addEventListener('click', () => { window.location.href = '/
     if (cidSave) cidSave.addEventListener('click', submitChatIdModal);
 
     // Auto-preencher usuário admin padrão
-    try { const adminUserInput = document.getElementById('admin-user'); if (adminUserInput) adminUserInput.value = 'admin'; } catch(_){}
+    try { const adminUserInput = document.getElementById('admin-user'); if (adminUserInput) adminUserInput.value = 'admin'; } catch (_) { }
 
     // Configurar toggle de dias por papel
     setupRoleDaysToggle();
