@@ -404,89 +404,6 @@
     } catch (e) { alert('Erro: ' + e.message); }
   }
 
-  // --- Lógica de Países (DDI) ---
-  async function loadCountries() {
-    const statusSpan = document.getElementById('country-status');
-    if (!statusSpan) return;
-    statusSpan.textContent = 'Carregando países...';
-    try {
-      const res = await authFetch(apiBase + '/countries');
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Falha ao buscar países');
-      renderCountries(data.countries || []);
-      statusSpan.textContent = `${(data.countries || []).length} países carregados.`;
-    } catch (e) {
-      statusSpan.textContent = 'Erro: ' + e.message;
-    }
-  }
-
-  function renderCountries(countries) {
-    const tbody = document.getElementById('countries-tbody');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-    countries.forEach(c => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${c.name}</td>
-        <td>+${c.code}</td>
-        <td><span class="muted">${c.id}</span></td>
-        <td></td>
-      `;
-      const actionTd = tr.querySelector('td:last-child');
-      const btnDel = document.createElement('button');
-      btnDel.className = 'btn-danger';
-      btnDel.textContent = 'Remover';
-      btnDel.style.padding = '4px 8px';
-      btnDel.style.fontSize = '12px';
-      btnDel.onclick = () => deleteCountry(c._id, c.name);
-      actionTd.appendChild(btnDel);
-      tbody.appendChild(tr);
-    });
-  }
-
-  async function addCountry() {
-    const isAdmin = !!getAdminToken();
-    if (!isAdmin) { alert('Faça login como admin para adicionar países'); return; }
-    const name = document.getElementById('new-country-name').value.trim();
-    const code = document.getElementById('new-country-code').value.trim();
-    const statusSpan = document.getElementById('country-status');
-
-    if (!name || !code) { statusSpan.textContent = 'Preencha Nome e Código DDI'; return; }
-    statusSpan.textContent = 'Adicionando...';
-
-    try {
-      const res = await authFetch(apiBase + '/admin/countries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: { name, code }
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Falha ao adicionar país');
-
-      document.getElementById('new-country-name').value = '';
-      document.getElementById('new-country-code').value = '';
-      statusSpan.textContent = 'País adicionado com sucesso!';
-      loadCountries();
-    } catch (e) {
-      statusSpan.textContent = 'Erro: ' + e.message;
-    }
-  }
-
-  async function deleteCountry(id, name) {
-    const isAdmin = !!getAdminToken();
-    if (!isAdmin) { alert('Faça login como admin'); return; }
-    if (!confirm(`Tem certeza que deseja remover o país: ${name}?`)) return;
-    try {
-      const res = await authFetch(apiBase + '/admin/countries/' + id, {
-        method: 'DELETE'
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Falha ao remover');
-      loadCountries();
-    } catch (e) { alert('Erro: ' + e.message); }
-  }
-  // --- FIM: Lógica de Países (DDI) ---
-
   let chatIdModalUserId = null;
   let chatIdModalCurrent = '';
   function openChatIdModal(userId, currentChatId) {
@@ -523,7 +440,7 @@
     if (role === 'admin') {
       if (loginCard) loginCard.style.display = 'none';
       setAdminStatus('Conectado como ' + (username || 'admin'));
-      try { loadUsers(); loadCountries(); } catch (_) { }
+      try { loadUsers(); } catch (_) { }
     }
   }
 
@@ -539,12 +456,6 @@
     if (createBtn) createBtn.addEventListener('click', createUser);
     const refreshBtn = document.getElementById('refresh-users-btn');
     if (refreshBtn) refreshBtn.addEventListener('click', loadUsers);
-
-    // DDI Botões
-    const addCountryBtn = document.getElementById('add-country-btn');
-    if (addCountryBtn) addCountryBtn.addEventListener('click', addCountry);
-    const refreshCountriesBtn = document.getElementById('refresh-countries-btn');
-    if (refreshCountriesBtn) refreshCountriesBtn.addEventListener('click', loadCountries);
 
     // Modais: senhas
     const pwCancel = document.getElementById('password-cancel-btn');

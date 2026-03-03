@@ -15,7 +15,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const userdb = require('./db');
 const instore = require('./instance_store');
-const Country = require('./models/Country'); // NOVO: Modelo de Países DDI
 // Initialize instance store file on startup
 instore.readStore();
 const dotenvPath = path.join(__dirname, '.env');
@@ -1426,48 +1425,6 @@ app.post('/configure-webhook', authRequired, adminRequired, async (req, res) => 
 });
 // --- FIM: Webhook de Status de Mensagem ---
 
-// --- GESTÃO DE PAÍSES (DDI) ---
-app.get('/countries', async (req, res) => {
-  try {
-    const countries = await Country.find().sort({ name: 1 });
-    res.json({ success: true, countries });
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao buscar países', details: error.message });
-  }
-});
-
-app.post('/admin/countries', authRequired, adminRequired, async (req, res) => {
-  try {
-    const { name, code } = req.body;
-    if (!name || !code) return res.status(400).json({ error: 'Nome e código são obrigatórios' });
-
-    // Gera ID único
-    let id = name.trim().replace(/\s+/g, "_").toUpperCase();
-    if (name.trim() === "Estados Unidos") id = "US";
-    if (name.trim() === "Canadá") id = "CA";
-    if (name.trim() === "Brasil") id = "BR";
-
-    const newCountry = new Country({ name: name.trim(), code: code.trim().replace('+', ''), id });
-    await newCountry.save();
-
-    res.json({ success: true, country: newCountry });
-  } catch (error) {
-    if (error.code === 11000) return res.status(400).json({ error: 'Este país já existe no sistema.' });
-    res.status(500).json({ error: 'Erro ao criar país', details: error.message });
-  }
-});
-
-app.delete('/admin/countries/:id', authRequired, adminRequired, async (req, res) => {
-  try {
-    const deleted = await Country.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ error: 'País não encontrado' });
-    res.json({ success: true, deleted });
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao remover país', details: error.message });
-  }
-});
-// --- FIM: GESTÃO DE PAÍSES ---
-
 // --- NOVO ENDPOINT: Desconectar Instância UAZAPI ---
 app.post('/disconnect-instance', authRequired, instanceWriteLimiter, async (req, res) => {
   try {
@@ -1818,81 +1775,6 @@ app.get('/instance-status', async (req, res) => {
   }
 });
 // --- FIM: Status da Instância ---
-
-// --- SEED DE PAÍSES DDI ---
-mongoose.connection.once('open', async () => {
-  try {
-    const count = await Country.countDocuments();
-    if (count === 0) {
-      console.log('[MongoDB] Banco de Países Vazio. Semeando DDI padrão...');
-      const defaultCountriesDDI = [
-        { name: "Afeganistão", code: "93" }, { name: "Argélia", code: "213" },
-        { name: "Angola", code: "244" }, { name: "Argentina", code: "54" },
-        { name: "Armênia", code: "374" }, { name: "Austrália", code: "61" },
-        { name: "Áustria", code: "43" }, { name: "Bangladesh", code: "880" },
-        { name: "Bélgica", code: "32" }, { name: "Bolívia", code: "591" },
-        { name: "Brasil", code: "55" }, { name: "Canadá", code: "1" },
-        { name: "Chile", code: "56" }, { name: "China", code: "86" },
-        { name: "Colômbia", code: "57" }, { name: "Coreia do Sul", code: "82" },
-        { name: "Coreia do Norte", code: "850" }, { name: "Costa Rica", code: "506" },
-        { name: "Cuba", code: "53" }, { name: "Dinamarca", code: "45" },
-        { name: "Ecuador", code: "593" }, { name: "Egito", code: "20" },
-        { name: "El Salvador", code: "503" }, { name: "Espanha", code: "34" },
-        { name: "Estados Unidos", code: "1" }, { name: "Estônia", code: "372" },
-        { name: "Filipinas", code: "63" }, { name: "Finlândia", code: "358" },
-        { name: "França", code: "33" }, { name: "Alemanha", code: "49" },
-        { name: "Grécia", code: "30" }, { name: "Guatemala", code: "502" },
-        { name: "Haiti", code: "509" }, { name: "Holanda (Países Baixos)", code: "31" },
-        { name: "Honduras", code: "504" }, { name: "Hungria", code: "36" },
-        { name: "Índia", code: "91" }, { name: "Indonésia", code: "62" },
-        { name: "Irã", code: "98" }, { name: "Iraque", code: "964" },
-        { name: "Irlanda", code: "353" }, { name: "Israel", code: "972" },
-        { name: "Itália", code: "39" }, { name: "Japão", code: "81" },
-        { name: "Jordânia", code: "962" }, { name: "Quênia", code: "254" },
-        { name: "Kuwait", code: "965" }, { name: "Letônia", code: "371" },
-        { name: "Líbano", code: "961" }, { name: "Líbia", code: "218" },
-        { name: "Lituânia", code: "370" }, { name: "Luxemburgo", code: "352" },
-        { name: "Macau", code: "853" }, { name: "Macedônia do Norte", code: "389" },
-        { name: "Malásia", code: "60" }, { name: "Mali", code: "223" },
-        { name: "Malta", code: "356" }, { name: "México", code: "52" },
-        { name: "Moçambique", code: "258" }, { name: "Marrocos", code: "212" },
-        { name: "Namíbia", code: "264" }, { name: "Nepal", code: "977" },
-        { name: "Nicarágua", code: "505" }, { name: "Nigéria", code: "234" },
-        { name: "Noruega", code: "47" }, { name: "Omã", code: "968" },
-        { name: "Paquistão", code: "92" }, { name: "Panamá", code: "507" },
-        { name: "Paraguai", code: "595" }, { name: "Peru", code: "51" },
-        { name: "Polônia", code: "48" }, { name: "Portugal", code: "351" },
-        { name: "Qatar", code: "974" }, { name: "Romênia", code: "40" },
-        { name: "Rússia", code: "7" }, { name: "Arábia Saudita", code: "966" },
-        { name: "Senegal", code: "221" }, { name: "Sérvia", code: "381" },
-        { name: "Singapura", code: "65" }, { name: "Eslováquia", code: "421" },
-        { name: "Eslovênia", code: "386" }, { name: "África do Sul", code: "27" },
-        { name: "Somália", code: "252" }, { name: "Sudão", code: "249" },
-        { name: "Suécia", code: "46" }, { name: "Suíça", code: "41" },
-        { name: "Síria", code: "963" }, { name: "Taiwan", code: "886" },
-        { name: "Tanzânia", code: "255" }, { name: "Tailândia", code: "66" },
-        { name: "Tunísia", code: "216" }, { name: "Turquia", code: "90" },
-        { name: "Ucrânia", code: "380" }, { name: "Emirados Árabes Unidos", code: "971" },
-        { name: "Reino Unido", code: "44" }, { name: "Uruguai", code: "598" },
-        { name: "Uzbequistão", code: "998" }, { name: "Venezuela", code: "58" },
-        { name: "Vietnã", code: "84" }, { name: "Iêmen", code: "967" },
-        { name: "Zâmbia", code: "260" }, { name: "Zimbábue", code: "263" }
-      ];
-      for (const c of defaultCountriesDDI) {
-        const raw = String(c.name || '').trim();
-        let id = raw.replace(/\s+/g, "_").toUpperCase();
-        if (raw === "Estados Unidos") id = "US";
-        if (raw === "Canadá") id = "CA";
-        if (raw === "Brasil") id = "BR";
-        await new Country({ name: raw, code: c.code, id }).save().catch(() => null);
-      }
-      console.log('[MongoDB] 106 DDI Países inseridos por padrão.');
-    }
-  } catch (err) {
-    console.error('[MongoDB] Erro ao seedar DDI countries:', err.message);
-  }
-});
-// --- FIM: SEED DE PAÍSES DDI ---
 
 // --- NOVO ENDPOINT: Eventos de QR (SSE) ---
 // Stream de eventos em tempo real para retorno na aba de QR.

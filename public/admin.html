@@ -609,41 +609,6 @@
       </div>
     </section>
 
-    <!-- NOVO: Gerenciar DDIs de Países -->
-    <section class="card">
-      <h2 style="margin:0 0 8px">Gerenciar Países (DDI)</h2>
-      <div class="grid grid-3">
-        <div>
-          <label>Nome do País</label>
-          <input id="new-country-name" placeholder="Ex: Portugal" />
-        </div>
-        <div>
-          <label>Código DDI</label>
-          <input id="new-country-code" placeholder="Ex: 351" />
-        </div>
-        <div style="display:flex; align-items:flex-end;">
-          <button id="add-country-btn" class="btn-primary" style="width: 100%;">Adicionar País</button>
-        </div>
-      </div>
-      <div class="actions" style="margin-top:10px; margin-bottom:8px">
-        <button id="refresh-countries-btn" class="btn">Atualizar lista</button>
-        <span id="country-status" class="muted"></span>
-      </div>
-      <div class="users-table-container" style="overflow:auto; max-height: 400px;">
-        <table class="users-table">
-          <thead>
-            <tr>
-              <th>Nome do País</th>
-              <th>Código DDI</th>
-              <th>ID</th>
-              <th style="width: 80px;">Ação</th>
-            </tr>
-          </thead>
-          <tbody id="countries-tbody"></tbody>
-        </table>
-      </div>
-    </section>
-
   </main>
 
   <!-- Modal Alterar Senha -->
@@ -1179,8 +1144,6 @@
       } catch (e) { alert('Erro: ' + e.message); }
     }
 
-    // Removido: Lógica de DDI Migrada para admin.js
-
     // Auto-login dev se ADMIN_USERNAME/PASSWORD padrão
     (function autoFill() {
       document.getElementById('admin-user').value = 'admin';
@@ -1195,13 +1158,13 @@
       if (token && role === 'admin') {
         if (loginCard) loginCard.style.display = 'none';
         setAdminStatus('Conectado como ' + (username || 'admin'));
-        // Carrega usuários e países automaticamente
-        try { loadUsers(); loadCountries(); } catch (_) {}
+        // Carrega usuários automaticamente
+        try { loadUsers(); } catch (_) {}
       }
     })();
   </script>
-  <script src="./js/common_auth.js?v=2"></script>
-  <script src="./js/admin.js?v=2"></script>
+  <script src="./js/common_auth.js"></script>
+  <script src="./js/admin.js"></script>
 </body>
 
 </html>
